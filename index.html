@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert App</title>
+    <style>
+        body { 
+        font-family: Arial, sans-serif; 
+        margin: 20px; 
+        padding: 20px; 
+    }
+
+    button { 
+        margin-top: 10px; 
+        background-color: seagreen; 
+        border: none; 
+        color: white; 
+        padding: 10px 15px; 
+        border-radius: 4px; 
+        cursor: pointer; 
+    }
+    .result { 
+        margin-top: 20px; 
+    }
+    #inputText { 
+        padding: 9px; 
+        max-width: 400px;
+        border-radius: 4px; 
+        border: 1px solid #ccc; 
+        width: 100%; 
+    }
+    #btn { 
+        border-radius: 4px; 
+    }
+    h1 {
+        text-align: center;
+        color: seagreen;
+    }
+    #input {
+        text-align: center;
+        
+    }
+    </style>
+</head>
+<body>
+    <h1>Chiper converting</h1>
+    <div id="input">
+        <input id="inputText" placeholder="Enter text..."/>
+        <button id="btn" onclick="convertInput()">Convert</button>
+    </div>
+    <div class="result" id="result"></div>
+
+    <script>
+        const kamus = {
+            'A': 0, 'B': 1, 'C': 1, 'D': 1, 'E': 2,
+            'F': 3, 'G': 3, 'H': 3, 'I': 4, 'J': 5,
+            'K': 5, 'L': 5, 'M': 5, 'N': 5, 'O': 6,
+            'P': 7, 'Q': 7, 'R': 7, 'S': 7, 'T': 7,
+            'U': 8, 'V': 0, 'W': 0, 'X': 0, 'Y': 0, 'Z': 0,
+            'a': 9, 'b': 8, 'c': 8, 'd': 8, 'e': 7,
+            'f': 6, 'g': 6, 'h': 6, 'i': 5, 'j': 4,
+            'k': 4, 'l': 4, 'm': 4, 'n': 4, 'o': 3,
+            'p': 2, 'q': 2, 'r': 2, 's': 2, 't': 2,
+            'u': 1, 'v': 0, 'w': 0, 'x': 0, 'y': 0, 'z': 0,
+            ' ': 0
+        };
+
+        let newKamus = {
+            0: "A",
+            1: "B",
+            2: "E",
+            3: "F",
+            4: "I",
+            5: "J",
+            6: "O",
+            7: "P",
+            8: "U",
+            9: "V",
+        };
+
+        function convertToNumbers(text) {
+            return text.split('').map(char => kamus[char] !== undefined ? kamus[char] : 0);
+        }
+
+        function calculateTotal(numbers) {
+            let total = 0;
+            total += numbers[0];
+            for (let i = 1; i < numbers.length; i++) {
+                if (i % 2 === 1) {
+                    total += numbers[i]; 
+                } else {
+                    total -= numbers[i]; 
+                }
+            }
+            return total;
+        }
+
+        function convertToLetters(number) {            
+            let num = Math.abs(number);
+            let index = 0;
+            let nilai = 0;
+            let jumlah = 0;
+            let result = [];
+
+            for (let i = 0; i < num; i++) {
+                nilai += i;
+                if (nilai >= num) {
+                    nilai = 0;
+                    index = 0;
+                }
+
+                jumlah += index;
+
+                result.push(newKamus[index]);
+                index++;
+
+                if (jumlah == num) {
+                    break;
+                }
+            }
+
+            return result.join(" ");
+        }
+
+        function convertToNumber2(num) {
+            let jumlah = 0; 
+            for (let i = 0; i < num.length; i++) {
+                let key = Object.keys(newKamus).find((v) => newKamus[v] === num[i]);
+                if (key !== undefined) {
+                    jumlah += parseInt(key);
+                } 
+            }
+            return jumlah;
+        }
+        
+        function convertToLetters2(sumLetter) {
+            let num = Math.abs(sumLetter);
+            let index = 0;
+            let nilai = 0;
+            let jumlah = 0;
+            let resetNilai = 0;
+            let result = []; 
+
+            for (let i = 0; i < num; i++) {
+                nilai += i;
+
+                if (nilai >= num) {
+                    nilai = resetNilai;
+                    index = resetNilai;
+
+                    resetNilai++;
+                }
+
+                jumlah += index;
+
+                result.push(newKamus[index]);
+                index++;
+
+                if (jumlah == num + 2) {
+                    break;
+                }
+            }
+
+            return result; 
+        }
+
+        function reverseConvert(letters) {
+            const newNumber = [];
+            for (let i = 0; i < letters.length; i++) {
+                let number = Object.keys(newKamus).find(key => newKamus[key] === letters[i]);
+                if (number !== undefined) {
+                    newNumber.push(parseInt(number));
+                }
+            }
+            return newNumber.join(""); 
+        }
+            
+            function modifyArray(array) {
+                return array.map((value, index) => {
+                return index % 2 === 0 ? value + 1 : value + 0;
+             });
+        }
+
+        function convertInput() {
+            const inputText = document.getElementById("inputText").value;
+            const numbers = convertToNumbers(inputText);
+            const total = calculateTotal(numbers);
+            const letters = convertToLetters(total);
+            const numbers2 = convertToNumber2(letters);
+            const letters2 = convertToLetters2(numbers2);
+            const finalNumbers = reverseConvert(letters2); 
+            const finalNumbersArray = finalNumbers.split('').map(Number); 
+            const modifiedArray = modifyArray(finalNumbersArray); 
+
+            document.getElementById("result").innerHTML = `
+                <h3>Step 1: convert to number</h3>
+                <p>${numbers.join(' ')}</p>
+                <h3>Step 2: calculation sum</h3>
+                <p>${total}</p>
+                <h3>Step 3: convert to letter</h3>
+                <p>${letters}</p>
+                <h3>Step 4: convert to new letter</h3>
+                <p>${letters2.join(" ")}</p>
+                <h3>Step 5: final output</h3>
+                <p>${modifiedArray.join(' ')}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
